@@ -10,6 +10,5 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long> {
-    @Query("SELECT s FROM Student s JOIN s.subjects subj WHERE subj = :subject")
-    List<Student> findAllBySubjects(@Param("subject") Subject subject);
+
 }

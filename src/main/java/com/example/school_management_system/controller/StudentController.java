@@ -34,4 +34,10 @@ public class StudentController {
     public List<StudentResponse> getAllStudentsBySubject(@RequestParam Long subjectId){
         return studentService.getAllStudentsBySubject(subjectId);
     }
+
+    // not recommended to use due to heavy custom operations on java code
+    @GetMapping("/students-by-teacher")
+    public List<StudentResponse> getAllStudentsByTeacher(@RequestParam Long teacherId){
+        return studentService.getAllStudentsByTeacher(teacherId);
+    }
 }
