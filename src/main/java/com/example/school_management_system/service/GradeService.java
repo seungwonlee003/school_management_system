@@ -27,15 +27,17 @@ public class GradeService {
     private final GradeMapper gradeMapper;
     @Autowired
     private final StudentRepository studentRepository;
-    public List<GradeResponse> getGradeByAssignment(Long assignmentId){
-    Assignment assignment = assignmentRepository.findById(assignmentId)
-            .orElseThrow(() -> new IllegalArgumentException());
-    return gradeRepository.findAllByAssignment(assignment)
-            .stream()
-            .map(asm -> gradeMapper.mapToDto(asm))
-            .collect(Collectors.toList());
+
+    public List<GradeResponse> getGradeByAssignment(Long assignmentId) {
+        Assignment assignment = assignmentRepository.findById(assignmentId)
+                .orElseThrow(() -> new IllegalArgumentException());
+        return gradeRepository.findAllByAssignment(assignment)
+                .stream()
+                .map(asm -> gradeMapper.mapToDto(asm))
+                .collect(Collectors.toList());
     }
-    public void createGrade(GradeRequest gradeRequest){
+
+    public void createGrade(GradeRequest gradeRequest) {
         Assignment assignment = assignmentRepository.findById(gradeRequest.getAssignmentId())
                 .orElseThrow(() -> new IllegalArgumentException());
         Student student = studentRepository.findById(gradeRequest.getStudentId())
@@ -45,9 +47,18 @@ public class GradeService {
                 .stream()
                 .anyMatch(s -> s.getId().equals(student.getId()));
         //student not enrolled in the specific subject
-        if(!isStudentInSubject) {
+        if (!isStudentInSubject) {
             throw new IllegalArgumentException();
         }
         gradeRepository.save(gradeMapper.mapToEntity(gradeRequest, student, assignment));
+    }
+
+    public List<GradeResponse> getGradeByStudent(Long studentId) {
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException());
+        return gradeRepository.findAllByStudent(student)
+                .stream()
+                .map(grade -> gradeMapper.mapToDto(grade))
+                .collect(Collectors.toList());
     }
 }

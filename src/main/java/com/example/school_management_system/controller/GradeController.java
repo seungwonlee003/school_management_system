@@ -26,4 +26,9 @@ public class GradeController {
     public void createGrade(@RequestBody @Valid GradeRequest gradeRequest){
         gradeService.createGrade(gradeRequest);
     }
+
+    @GetMapping("/student")
+    public List<GradeResponse> getGradeByStudent(@RequestParam Long studentId){
+        return gradeService.getGradeByStudent(studentId);
+    }
 }
