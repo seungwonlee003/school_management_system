@@ -4,15 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
-public class SubjectRequest {
-    @NotBlank
-    private String name;
+@AllArgsConstructor
+@NoArgsConstructor
+public class GradeRequest {
     @NotNull
-    private Long teacherId;
+    private Double grade;
+    @NotNull
+    private Long studentId;
+    @NotNull
+    private Long assignmentId;
 }

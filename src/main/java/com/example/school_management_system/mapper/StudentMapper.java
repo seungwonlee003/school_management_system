@@ -5,9 +5,7 @@ import com.example.school_management_system.dto.StudentResponse;
 import com.example.school_management_system.model.Student;
 import org.springframework.stereotype.Component;
 
-import javax.security.auth.Subject;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component

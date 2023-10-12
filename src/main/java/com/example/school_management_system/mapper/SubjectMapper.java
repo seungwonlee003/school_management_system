@@ -1,6 +1,5 @@
 package com.example.school_management_system.mapper;
 
-import com.example.school_management_system.dto.StudentResponse;
 import com.example.school_management_system.dto.SubjectRequest;
 import com.example.school_management_system.dto.SubjectResponse;
 import com.example.school_management_system.model.Subject;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 @Component
 @AllArgsConstructor

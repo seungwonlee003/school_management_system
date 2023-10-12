@@ -7,23 +7,21 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class Subject {
+public class Assignment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long Id;
     private String name;
+    private String description;
     @ManyToOne
-    @JoinColumn(name = "teacherId", referencedColumnName = "id")
-    private Teacher teacher;
-    @ManyToMany(mappedBy = "subjects")
-    private Set<Student> students;
-    @OneToMany(mappedBy = "subject")
-    private List<Assignment> assignments;
+    @JoinColumn(name = "subjectId", referencedColumnName = "id")
+    private Subject subject;
+    @OneToMany(mappedBy = "assignment")
+    private List<Grade> grades;
 }

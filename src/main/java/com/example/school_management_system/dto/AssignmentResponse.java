@@ -4,14 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class StudentResponse {
-    private Long id;
+public class AssignmentResponse {
+    private Long assignmentId;
+    private Long subjectId;
     private String name;
-    private int gradeLevel;
-    private List<String> subjects;
+    private String description;
 }

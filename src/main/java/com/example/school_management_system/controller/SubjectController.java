@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -17,13 +18,19 @@ public class SubjectController {
     private final SubjectService subjectService;
 
     @PostMapping
-    public void createSubject(@RequestBody SubjectRequest subjectRequest){
+    // teacherId required in subject request
+    public void createSubject(@RequestBody @Valid SubjectRequest subjectRequest){
         subjectService.createSubject(subjectRequest);
     }
 
     @GetMapping
     public List<SubjectResponse> getAllSubject(){
         return subjectService.getAllSubject();
+    }
+
+    @GetMapping("/by-teacher")
+    public List<SubjectResponse> getAllSubjectByTeacher(@RequestParam Long teacherId){
+        return subjectService.getAllSubjectByTeacher(teacherId);
     }
 
     @PatchMapping("/assign-student")

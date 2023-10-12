@@ -6,24 +6,21 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
-import java.util.Set;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class Subject {
+public class Grade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    private Double grade;
     @ManyToOne
-    @JoinColumn(name = "teacherId", referencedColumnName = "id")
-    private Teacher teacher;
-    @ManyToMany(mappedBy = "subjects")
-    private Set<Student> students;
-    @OneToMany(mappedBy = "subject")
-    private List<Assignment> assignments;
+    @JoinColumn(name = "studentId", referencedColumnName = "id")
+    private Student student;
+    @ManyToOne
+    @JoinColumn(name = "assignmentId", referencedColumnName = "id")
+    private Assignment assignment;
 }

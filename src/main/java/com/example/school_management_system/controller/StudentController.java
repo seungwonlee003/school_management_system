@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -17,7 +18,7 @@ public class StudentController {
     private final StudentService studentService;
 
     @PostMapping
-    public void createStudent(@RequestBody StudentRequest studentRequest){
+    public void createStudent(@RequestBody @Valid StudentRequest studentRequest){
         studentService.createStudent(studentRequest);
     }
     @GetMapping

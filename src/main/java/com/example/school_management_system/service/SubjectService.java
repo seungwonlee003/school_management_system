@@ -28,6 +28,7 @@ public class SubjectService {
     private final TeacherRepository teacherRepository;
     @Autowired
     private final StudentRepository studentRepository;
+    // teacher id must not be null
     public void createSubject(SubjectRequest subjectRequest){
         Teacher teacher = teacherRepository.findById(subjectRequest.getTeacherId())
                 .orElseThrow(() -> new IllegalArgumentException());
@@ -38,6 +39,15 @@ public class SubjectService {
                 .map(subject -> subjectMapper.mapToDto(subject))
                 .collect(Collectors.toList());
     }
+    public List<SubjectResponse> getAllSubjectByTeacher(@RequestParam Long teacherId){
+        Teacher teacher = teacherRepository.findById(teacherId)
+                .orElseThrow(() -> new IllegalArgumentException());
+        return subjectRepository.findAllByTeacher(teacher)
+                .stream()
+                .map(tchr -> subjectMapper.mapToDto(tchr))
+                .collect(Collectors.toList());
+    }
+
     public void assignStudentToSubject(Long studentId, Long subjectId){
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new IllegalArgumentException());

@@ -1,7 +1,5 @@
 package com.example.school_management_system.service;
 
-import com.example.school_management_system.controller.TeacherController;
-import com.example.school_management_system.dto.StudentResponse;
 import com.example.school_management_system.dto.TeacherRequest;
 import com.example.school_management_system.dto.TeacherResponse;
 import com.example.school_management_system.mapper.TeacherMapper;
@@ -10,9 +8,7 @@ import com.example.school_management_system.repository.TeacherRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
