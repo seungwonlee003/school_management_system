@@ -2,6 +2,9 @@ package com.example.school_management_system.service;
 
 import com.example.school_management_system.dto.SubjectRequest;
 import com.example.school_management_system.dto.SubjectResponse;
+import com.example.school_management_system.exceptions.StudentNotFoundException;
+import com.example.school_management_system.exceptions.SubjectNotFoundException;
+import com.example.school_management_system.exceptions.TeacherNotFoundException;
 import com.example.school_management_system.mapper.SubjectMapper;
 import com.example.school_management_system.model.Student;
 import com.example.school_management_system.model.Subject;
@@ -31,7 +34,7 @@ public class SubjectService {
     // teacher id must not be null
     public void createSubject(SubjectRequest subjectRequest){
         Teacher teacher = teacherRepository.findById(subjectRequest.getTeacherId())
-                .orElseThrow(() -> new IllegalArgumentException());
+                .orElseThrow(() -> new TeacherNotFoundException(subjectRequest.getTeacherId().toString()));
         subjectRepository.save(subjectMapper.mapToEntity(subjectRequest, teacher));
     }
     public List<SubjectResponse> getAllSubject(){
@@ -41,7 +44,7 @@ public class SubjectService {
     }
     public List<SubjectResponse> getAllSubjectByTeacher(@RequestParam Long teacherId){
         Teacher teacher = teacherRepository.findById(teacherId)
-                .orElseThrow(() -> new IllegalArgumentException());
+                .orElseThrow(() -> new TeacherNotFoundException(teacherId.toString()));
         return subjectRepository.findAllByTeacher(teacher)
                 .stream()
                 .map(tchr -> subjectMapper.mapToDto(tchr))
@@ -50,9 +53,9 @@ public class SubjectService {
 
     public void assignStudentToSubject(Long studentId, Long subjectId){
         Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new IllegalArgumentException());
+                .orElseThrow(() -> new StudentNotFoundException(studentId.toString()));
         Subject subject = subjectRepository.findById(subjectId)
-                .orElseThrow(() -> new IllegalArgumentException());
+                .orElseThrow(() -> new SubjectNotFoundException(subjectId.toString()));
         subject.getStudents().add(student);
         student.getSubjects().add(subject);
         // Save the changes to both entities
@@ -63,9 +66,9 @@ public class SubjectService {
     public void assignTeacherToSubject(@RequestParam Long teacherId,
                                        @RequestParam Long subjectId){
         Teacher teacher = teacherRepository.findById(teacherId)
-                .orElseThrow(() -> new IllegalArgumentException());
+                .orElseThrow(() -> new TeacherNotFoundException(teacherId.toString()));
         Subject subject = subjectRepository.findById(subjectId)
-                .orElseThrow(() -> new IllegalArgumentException());
+                .orElseThrow(() -> new SubjectNotFoundException(subjectId.toString()));
         subject.setTeacher(teacher);
         teacher.getSubjects().add(subject);
         // Save the changes to both entities

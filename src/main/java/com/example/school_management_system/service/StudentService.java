@@ -2,6 +2,9 @@ package com.example.school_management_system.service;
 
 import com.example.school_management_system.dto.StudentRequest;
 import com.example.school_management_system.dto.StudentResponse;
+import com.example.school_management_system.exceptions.StudentNotFoundException;
+import com.example.school_management_system.exceptions.SubjectNotFoundException;
+import com.example.school_management_system.exceptions.TeacherNotFoundException;
 import com.example.school_management_system.mapper.StudentMapper;
 import com.example.school_management_system.model.Student;
 import com.example.school_management_system.model.Subject;
@@ -14,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,6 +35,9 @@ public class StudentService {
     private final StudentRepository studentRepository;
     @Autowired
     private final TeacherRepository teacherRepository;
+    @PersistenceContext
+    private EntityManager entityManager;
+
     public void createStudent(StudentRequest studentRequest) {
         studentRepository.save(studentMapper.mapToEntity(studentRequest));
     }
@@ -43,13 +51,13 @@ public class StudentService {
 
     public StudentResponse getStudentById(Long id) {
         Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException());
+                .orElseThrow(() -> new StudentNotFoundException(id.toString()));
         return studentMapper.mapToDto(student);
     }
 
     public List<StudentResponse> getAllStudentsBySubject(Long subjectId) {
         Subject subject = subjectRepository.findById(subjectId)
-                .orElseThrow(() -> new IllegalArgumentException());
+                .orElseThrow(() -> new SubjectNotFoundException(subjectId.toString()));
         Set<Student> studentSet = subject.getStudents();
         return studentSet
                 .stream()
@@ -60,7 +68,7 @@ public class StudentService {
     // returns unsorted list
     public List<StudentResponse> getAllStudentsByTeacher(@RequestParam Long teacherId) {
         Teacher teacher = teacherRepository.findById(teacherId)
-                .orElseThrow(() -> new IllegalArgumentException("Teacher not found"));
+                .orElseThrow(() -> new TeacherNotFoundException(teacherId.toString()));
 
         Set<Subject> subjects = teacher.getSubjects();
 
@@ -73,5 +81,14 @@ public class StudentService {
                 .map(student -> studentMapper.mapToDto(student))
                 .collect(Collectors.toList());
         return studentResponses;
+    }
+
+    public void deleteStudent(Long studentId) {
+        Student student = studentRepository.findById(studentId)
+                        .orElseThrow(() -> new StudentNotFoundException(studentId.toString()));
+        entityManager.createNativeQuery("DELETE FROM student_subject WHERE student_id = :studentId")
+                .setParameter("studentId", studentId)
+                .executeUpdate();
+        studentRepository.deleteById(studentId);
     }
 }

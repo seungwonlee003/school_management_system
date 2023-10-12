@@ -2,6 +2,7 @@ package com.example.school_management_system.service;
 
 import com.example.school_management_system.dto.AssignmentRequest;
 import com.example.school_management_system.dto.AssignmentResponse;
+import com.example.school_management_system.exceptions.SubjectNotFoundException;
 import com.example.school_management_system.mapper.AssignmentMapper;
 import com.example.school_management_system.model.Assignment;
 import com.example.school_management_system.model.Subject;
@@ -26,13 +27,13 @@ public class AssignmentService {
 
     public void createAssignment(AssignmentRequest assignmentRequest) {
         Subject subject = subjectRepository.findById(assignmentRequest.getSubjectId())
-                .orElseThrow(() -> new IllegalArgumentException());
+                .orElseThrow(() -> new SubjectNotFoundException(assignmentRequest.getSubjectId().toString()));
         assignmentRepository.save(assignmentMapper.mapToEntity(assignmentRequest, subject));
     }
 
     public List<AssignmentResponse> getAssignmentBySubject(Long subjectId) {
         Subject subject = subjectRepository.findById(subjectId)
-                .orElseThrow(() -> new IllegalArgumentException());
+                .orElseThrow(() -> new SubjectNotFoundException(subjectId.toString()));
         List<Assignment> assignments = assignmentRepository.findAllBySubject(subject);
         return assignments.stream()
                 .map(assignment -> assignmentMapper.mapToDto(assignment))

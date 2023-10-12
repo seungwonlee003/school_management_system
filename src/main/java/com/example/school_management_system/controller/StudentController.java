@@ -5,40 +5,51 @@ import com.example.school_management_system.dto.StudentResponse;
 import com.example.school_management_system.service.StudentService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/student")
+@RequestMapping("/api/student")
 @AllArgsConstructor
 public class StudentController {
     @Autowired
     private final StudentService studentService;
 
     @PostMapping
-    public void createStudent(@RequestBody @Valid StudentRequest studentRequest){
+    public ResponseEntity<Void> createStudent(@RequestBody @Valid StudentRequest studentRequest){
         studentService.createStudent(studentRequest);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
     @GetMapping
-    public List<StudentResponse> getAllStudents(){
-        return studentService.getAllStudents();
+    public ResponseEntity<List<StudentResponse>> getAllStudents(){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(studentService.getAllStudents());
     }
 
     @GetMapping("/{id}")
-    public StudentResponse getStudentById(@PathVariable Long id){
-        return studentService.getStudentById(id);
+    public ResponseEntity<StudentResponse> getStudentById(@PathVariable Long id){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(studentService.getStudentById(id));
     }
 
     @GetMapping("/students-by-subject")
-    public List<StudentResponse> getAllStudentsBySubject(@RequestParam Long subjectId){
-        return studentService.getAllStudentsBySubject(subjectId);
+    public ResponseEntity<List<StudentResponse>> getAllStudentsBySubject(@RequestParam Long subjectId){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(studentService.getAllStudentsBySubject(subjectId));
     }
 
     // not recommended to use due to heavy custom operations on java code
     @GetMapping("/students-by-teacher")
-    public List<StudentResponse> getAllStudentsByTeacher(@RequestParam Long teacherId){
-        return studentService.getAllStudentsByTeacher(teacherId);
+    public ResponseEntity<List<StudentResponse>> getAllStudentsByTeacher(@RequestParam Long teacherId){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(studentService.getAllStudentsByTeacher(teacherId));
     }
 }

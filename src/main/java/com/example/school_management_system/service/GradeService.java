@@ -2,6 +2,8 @@ package com.example.school_management_system.service;
 
 import com.example.school_management_system.dto.GradeRequest;
 import com.example.school_management_system.dto.GradeResponse;
+import com.example.school_management_system.exceptions.AssignmentNotFoundException;
+import com.example.school_management_system.exceptions.StudentNotFoundException;
 import com.example.school_management_system.mapper.GradeMapper;
 import com.example.school_management_system.model.Assignment;
 import com.example.school_management_system.model.Student;
@@ -28,20 +30,11 @@ public class GradeService {
     @Autowired
     private final StudentRepository studentRepository;
 
-    public List<GradeResponse> getGradeByAssignment(Long assignmentId) {
-        Assignment assignment = assignmentRepository.findById(assignmentId)
-                .orElseThrow(() -> new IllegalArgumentException());
-        return gradeRepository.findAllByAssignment(assignment)
-                .stream()
-                .map(asm -> gradeMapper.mapToDto(asm))
-                .collect(Collectors.toList());
-    }
-
     public void createGrade(GradeRequest gradeRequest) {
         Assignment assignment = assignmentRepository.findById(gradeRequest.getAssignmentId())
-                .orElseThrow(() -> new IllegalArgumentException());
+                .orElseThrow(() -> new AssignmentNotFoundException(gradeRequest.getAssignmentId().toString()));
         Student student = studentRepository.findById(gradeRequest.getStudentId())
-                .orElseThrow(() -> new IllegalArgumentException());
+                .orElseThrow(() -> new StudentNotFoundException(gradeRequest.getStudentId().toString()));
         Subject subject = assignment.getSubject();
         boolean isStudentInSubject = subject.getStudents()
                 .stream()
@@ -52,10 +45,17 @@ public class GradeService {
         }
         gradeRepository.save(gradeMapper.mapToEntity(gradeRequest, student, assignment));
     }
-
+    public List<GradeResponse> getGradeByAssignment(Long assignmentId) {
+        Assignment assignment = assignmentRepository.findById(assignmentId)
+                .orElseThrow(() -> new AssignmentNotFoundException(assignmentId.toString()));
+        return gradeRepository.findAllByAssignment(assignment)
+                .stream()
+                .map(asm -> gradeMapper.mapToDto(asm))
+                .collect(Collectors.toList());
+    }
     public List<GradeResponse> getGradeByStudent(Long studentId) {
         Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new IllegalArgumentException());
+                .orElseThrow(() -> new StudentNotFoundException(studentId.toString()));
         return gradeRepository.findAllByStudent(student)
                 .stream()
                 .map(grade -> gradeMapper.mapToDto(grade))
