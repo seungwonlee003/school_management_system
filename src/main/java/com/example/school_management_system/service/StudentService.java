@@ -35,8 +35,6 @@ public class StudentService {
     private final StudentRepository studentRepository;
     @Autowired
     private final TeacherRepository teacherRepository;
-    @PersistenceContext
-    private EntityManager entityManager;
 
     public void createStudent(StudentRequest studentRequest) {
         studentRepository.save(studentMapper.mapToEntity(studentRequest));
@@ -66,7 +64,7 @@ public class StudentService {
     }
 
     // returns unsorted list
-    public List<StudentResponse> getAllStudentsByTeacher(@RequestParam Long teacherId) {
+    public List<StudentResponse> getAllStudentsByTeacher(Long teacherId) {
         Teacher teacher = teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new TeacherNotFoundException(teacherId.toString()));
 
@@ -81,14 +79,5 @@ public class StudentService {
                 .map(student -> studentMapper.mapToDto(student))
                 .collect(Collectors.toList());
         return studentResponses;
-    }
-
-    public void deleteStudent(Long studentId) {
-        Student student = studentRepository.findById(studentId)
-                        .orElseThrow(() -> new StudentNotFoundException(studentId.toString()));
-        entityManager.createNativeQuery("DELETE FROM student_subject WHERE student_id = :studentId")
-                .setParameter("studentId", studentId)
-                .executeUpdate();
-        studentRepository.deleteById(studentId);
     }
 }

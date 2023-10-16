@@ -13,8 +13,8 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/student")
 @AllArgsConstructor
+@RequestMapping("/api/student")
 public class StudentController {
     @Autowired
     private final StudentService studentService;
