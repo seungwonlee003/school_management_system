@@ -69,6 +69,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.testcontainers</groupId>
+			<artifactId>testcontainers</artifactId>
+			<version>1.16.2</version> <!-- Use the latest version available -->
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
 			<artifactId>mysql</artifactId>
 			<version>1.15.0</version> <!-- Use the latest version available -->
 			<scope>test</scope>
