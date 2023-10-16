@@ -8,11 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
 
-
+// it is not a spring boot test
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Slf4j
@@ -45,7 +44,7 @@ public class StudentRepositoryTest extends AbstractContainerBaseTest{
     }
 
     @Test
-    void shouldGetStudent(){
+    void shouldGetStudentById(){
         Student expectedStudent = new Student(1L, "Seungwon Lee", 12, null);
         Student student = studentRepository.save(expectedStudent);
         Student actualStudent = studentRepository.findById(student.getId()).orElse(null);
