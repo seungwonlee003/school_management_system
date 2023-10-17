@@ -22,13 +22,15 @@ import java.util.Arrays;
 public class StudentIntegrationTest extends AbstractContainerBaseTest {
 
     @Autowired
-    TestRestTemplate restTemplate;
+    private TestRestTemplate restTemplate;
 
     @Autowired
-    StudentRepository studentRepository;
+    private StudentRepository studentRepository;
 
     @LocalServerPort
-    int randomServerPort;
+    private int randomServerPort;
+
+    private String baseUrl = "http://localhost";
 
     @BeforeEach
     void setupTestData(){
@@ -37,26 +39,25 @@ public class StudentIntegrationTest extends AbstractContainerBaseTest {
         Student student3 = new Student(3L, "Jason", 12, null);
         Student student4 = new Student(4L, "Chris", 12, null);
         studentRepository.saveAll(Arrays.asList(student1, student2, student3, student4));
+        baseUrl = baseUrl.concat(":").concat(randomServerPort + "").concat("/api/student");
     }
 
     @Test
     void shouldFindAllStudent(){
         StudentResponse[] studentResponses = restTemplate
-                .getForObject("http://localhost:" + randomServerPort + "/api/student", StudentResponse[].class);
+                .getForObject(baseUrl, StudentResponse[].class);
         Assertions.assertThat(studentResponses.length).isEqualTo(4);
     }
 
     @Test
     void shouldFindStudentWithValidStudentId(){
-        ResponseEntity<StudentResponse> response = restTemplate.exchange("http://localhost:" + randomServerPort
-                + "/api/student/1", HttpMethod.GET, null, StudentResponse.class);
+        ResponseEntity<StudentResponse> response = restTemplate.exchange(baseUrl.concat("/1"), HttpMethod.GET, null, StudentResponse.class);
         Assertions.assertThat(response.getBody().getName()).isEqualTo("Seungwon Lee");
     }
 
     @Test
     void shouldThrowStudentNotFoundWhenInvalidStudentId(){
-        ResponseEntity<StudentResponse> response = restTemplate.exchange("http://localhost:" + randomServerPort
-                + "/api/student/5", HttpMethod.GET, null, StudentResponse.class);
+        ResponseEntity<StudentResponse> response = restTemplate.exchange(baseUrl.concat("/5"), HttpMethod.GET, null, StudentResponse.class);
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -64,8 +65,8 @@ public class StudentIntegrationTest extends AbstractContainerBaseTest {
     @Rollback
     void shouldCreateNewStudentWhenStudentIdIsValid(){
         Student student = new Student(5L, "Harry", 12, null);
-        ResponseEntity<Void> response = restTemplate.exchange("http://localhost:" + randomServerPort
-                        + "/api/student", HttpMethod.POST, new HttpEntity<Student>(student), Void.class);
+        // format: (url, GET/POST/PATCH/DELETE, request body wrapped with HttpEntity, returned type.class)
+        ResponseEntity<Void> response = restTemplate.exchange(baseUrl, HttpMethod.POST, new HttpEntity<Student>(student), Void.class);
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         Assertions.assertThat(studentRepository.findById(5L).get().getName()).isEqualTo(student.getName());
     }
