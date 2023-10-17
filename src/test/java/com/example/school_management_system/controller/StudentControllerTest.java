@@ -48,6 +48,7 @@ public class StudentControllerTest {
         StudentResponse studentResponse = new StudentResponse(1L, "Seungwon Lee", 12, Arrays.asList("Math", "Physics"));
         StudentResponse studentResponse2 = new StudentResponse(2L, "Jungwon Lee", 7, Arrays.asList("Computer Science"));
         given(studentService.getAllStudents()).willReturn(Arrays.asList(studentResponse, studentResponse2));
+        // above is equivalent to:
         // Mockito.when(studentService.getAllStudents()).thenReturn(Arrays.asList(studentResponse, studentResponse2));
 
         mockMvc.perform(

@@ -1,4 +1,4 @@
-package com.example.school_management_system;
+package com.example.school_management_system.integration_test;
 
 import com.example.school_management_system.dto.StudentResponse;
 import com.example.school_management_system.model.Student;
@@ -12,17 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.*;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.web.client.RestTemplate;
 
-import javax.transaction.Transactional;
 import java.util.Arrays;
-import java.util.List;
+
 @Slf4j
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class IntegrationTest extends AbstractContainerBaseTest {
+public class StudentIntegrationTest extends AbstractContainerBaseTest {
 
     @Autowired
     TestRestTemplate restTemplate;
@@ -34,7 +31,7 @@ public class IntegrationTest extends AbstractContainerBaseTest {
     int randomServerPort;
 
     @BeforeEach
-    void setUpData(){
+    void setupTestData(){
         Student student1 = new Student(1L, "Seungwon Lee", 12, null);
         Student student2 = new Student(2L, "Jungwon Lee", 12, null);
         Student student3 = new Student(3L, "Jason", 12, null);
