@@ -1,4 +1,4 @@
-package com.example.school_management_system.integration_test;
+package com.example.school_management_system.integration;
 
 import com.example.school_management_system.dto.StudentResponse;
 import com.example.school_management_system.model.Student;
@@ -18,7 +18,7 @@ import org.springframework.test.annotation.Rollback;
 import java.util.Arrays;
 
 @Slf4j
-@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class StudentIntegrationTest extends AbstractContainerBaseTest {
 
     @Autowired
@@ -33,7 +33,7 @@ public class StudentIntegrationTest extends AbstractContainerBaseTest {
     private String baseUrl = "http://localhost";
 
     @BeforeEach
-    void setupTestData(){
+    void setupTestData() {
         Student student1 = new Student(1L, "Seungwon Lee", 12, null);
         Student student2 = new Student(2L, "Jungwon Lee", 12, null);
         Student student3 = new Student(3L, "Jason", 12, null);
@@ -43,27 +43,27 @@ public class StudentIntegrationTest extends AbstractContainerBaseTest {
     }
 
     @Test
-    void shouldFindAllStudent(){
+    void shouldFindAllStudent() {
         StudentResponse[] studentResponses = restTemplate
                 .getForObject(baseUrl, StudentResponse[].class);
         Assertions.assertThat(studentResponses.length).isEqualTo(4);
     }
 
     @Test
-    void shouldFindStudentWithValidStudentId(){
+    void shouldFindStudentWithValidStudentId() {
         ResponseEntity<StudentResponse> response = restTemplate.exchange(baseUrl.concat("/1"), HttpMethod.GET, null, StudentResponse.class);
         Assertions.assertThat(response.getBody().getName()).isEqualTo("Seungwon Lee");
     }
 
     @Test
-    void shouldThrowStudentNotFoundWhenInvalidStudentId(){
+    void shouldThrowStudentNotFoundWhenInvalidStudentId() {
         ResponseEntity<StudentResponse> response = restTemplate.exchange(baseUrl.concat("/5"), HttpMethod.GET, null, StudentResponse.class);
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Test
     @Rollback
-    void shouldCreateNewStudentWhenStudentIdIsValid(){
+    void shouldCreateNewStudentWhenStudentIdIsValid() {
         Student student = new Student(5L, "Harry", 12, null);
         // format: (url, GET/POST/PATCH/DELETE, request body wrapped with HttpEntity, returned type.class)
         ResponseEntity<Void> response = restTemplate.exchange(baseUrl, HttpMethod.POST, new HttpEntity<Student>(student), Void.class);
